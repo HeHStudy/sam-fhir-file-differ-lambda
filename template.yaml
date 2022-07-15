@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  sam-fhir-file-differ
+
+  Sample SAM Template for sam-fhir-file-differ
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 360
+    Tracing: Active
+  Api:
+    TracingEnabled: True
+
+Resources:
+  DifferFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: hello_world/
+      Handler: app.lambda_handler
+      Runtime: python3.8
+      MemorySize: 512
+      Timeout: 360
+      Role: 'arn:aws:iam::312752447322:role/FhirDifferS3StreamPolicy'
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          BUCKET: "eurekatechteam-data-pipeline"
+          COPY_FILE_LAMBDA_ARN: "arn:aws:lambda:us-west-2:312752447322:function:fhir-layer-replicator"
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  HelloWorldApi:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+  DifferFunction:
+    Description: "Hello World Lambda Function ARN"
+    Value: !GetAtt DifferFunction.Arn
+  DifferFunctionIamRole:
+    Description: "Implicit IAM Role created for Hello World function"
+    Value: !GetAtt DifferFunctionRole.Arn
