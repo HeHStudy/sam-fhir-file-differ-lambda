@@ -26,11 +26,11 @@ def lambda_handler(event, context):
           'version': version,
           'requestId': requestId
         }
-        response = lambda_client.invoke(
-            FunctionName=LAMBDA_ARN,
-            InvocationType="RequestResponse",
-            Payload=json.dumps(payload)
-        )
+        #response = lambda_client.invoke(
+        #    FunctionName=LAMBDA_ARN,
+        #    InvocationType="RequestResponse",
+        #    Payload=json.dumps(payload)
+        #)
     else:
         print("> Same file")
 
