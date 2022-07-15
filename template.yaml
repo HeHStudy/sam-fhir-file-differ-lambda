@@ -17,8 +17,8 @@ Resources:
   DifferFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: hello_world/
-      Handler: app.lambda_handler
+      CodeUri: src/
+      Handler: main.lambda_handler
       Runtime: python3.8
       MemorySize: 512
       Timeout: 360
