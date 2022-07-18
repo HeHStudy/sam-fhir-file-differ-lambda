@@ -2,6 +2,7 @@ import sys
 import boto3
 import json
 import os
+from deepdiff import DeepDiff
 
 s3_client  = boto3.client('s3')
 BUCKET     = os.environ['BUCKET']
@@ -10,7 +11,6 @@ LAMBDA_ARN = os.environ['COPY_FILE_LAMBDA_ARN']
 def lambda_handler(event, context):
 
     print(event)
-    print(BUCKET)
     file1         = event['file1']
     file2         = event['file2']
     version       = event['version']
@@ -18,7 +18,8 @@ def lambda_handler(event, context):
     json1   = json.loads(s3_read(file1))
     json2   = json.loads(s3_read(file2))
 
-    if json1['entry'] != json2['entry']:
+    # First we check the obvious difference and then use deepdiff
+    if len(json1['entry']) != len(json2['entry']) or DeepDiff(json1, json2, ignore_order=True):
         print("NEW FILE FOUND, COPYING DATA TO LAYER2")
         lambda_client = boto3.client('lambda')
         payload       = {
