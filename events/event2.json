@@ -1,0 +1,8 @@
+{
+  "description": "where there are no entry elements",
+  "file1": "hive/openepic_shared/DSTU2/observation_laboratory_sero/fhirprovider=openepic_shared_cleveland_clinic/uploadeddate=2022-07-20/userid=322969/20220720.json",
+  "file2": "hive/openepic_shared/DSTU2/observation_laboratory_sero/fhirprovider=openepic_shared_cleveland_clinic/uploadeddate=2022-06-22/userid=322969/20220622.json",
+  "version": 1,
+  "requestId": "REQUEST_ID#openepic_shared/R4/observation_laboratory_hem_bc/openepic_shared_ucsf_health/373356"
+}
+

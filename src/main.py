@@ -17,9 +17,13 @@ def lambda_handler(event, context):
     requestId     = event['requestId']
     json1   = json.loads(s3_read(file1))
     json2   = json.loads(s3_read(file2))
+    entry1  = json1.get('entry', [])
+    entry2  = json2.get('entry', [])
 
+    d = DeepDiff(entry1, entry2, ignore_order=True)
+    print(d)
     # First we check the obvious difference and then use deepdiff
-    if len(json1['entry']) != len(json2['entry']) or DeepDiff(json1, json2, ignore_order=True):
+    if len(entry1) != len(entry2) or d:
         print("NEW FILE FOUND, COPYING DATA TO LAYER2")
         lambda_client = boto3.client('lambda')
         payload       = {

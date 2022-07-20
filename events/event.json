@@ -1,6 +1,7 @@
 {
-  "file1": "hive/openepic_shared/R4/observation_laboratory_hem_bc/fhirprovider=openepic_shared_ucsf_health/uploadeddate=2022-07-15/userid=373356/20220715.json",
-  "file2": "hive/openepic_shared/R4/observation_laboratory_hem_bc/fhirprovider=openepic_shared_ucsf_health/uploadeddate=2022-07-15/userid=373356/20220715.json",
+  "description": "Event where there's a small change on a OperationOutcome",
+  "file1": "hive/openepic_shared/R4/diagnosticreport/fhirprovider=openepic_shared_baylor_scott_white/uploadeddate=2022-06-22/userid=501907/20220622.json",
+  "file2": "hive/openepic_shared/R4/diagnosticreport/fhirprovider=openepic_shared_baylor_scott_white/uploadeddate=2022-07-19/userid=501907/20220719.json",
   "version": 1,
   "requestId": "REQUEST_ID#openepic_shared/R4/observation_laboratory_hem_bc/openepic_shared_ucsf_health/373356"
 }
