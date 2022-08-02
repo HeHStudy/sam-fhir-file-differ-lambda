@@ -20,14 +20,9 @@ def lambda_handler(event, context):
     entry1  = json1.get('entry', [])
     entry2  = json2.get('entry', [])
 
-    print(len(entry1))
-    print(len(entry2))
-
-    n_entry1 = exclude_operation_outcomes_from_entry(entry1)
-    n_entry2 = exclude_operation_outcomes_from_entry(entry2)
 
     # First we check the obvious difference and then use deepdiff
-    if len(n_entry1) != len(n_entry2) or diffyng(n_entry1, n_entry2):
+    if len(entry1) != len(entry2) or diffyng(entry1, entry2):
         print("NEW FILE FOUND, COPYING DATA TO LAYER2")
         lambda_client = boto3.client('lambda')
         payload       = {
@@ -43,17 +38,24 @@ def lambda_handler(event, context):
     else:
         print("> Same file")
 
+# This can exclude elements from the path
+# see: https://zepworks.com/deepdiff/current/ignore_types_or_values.html#exclude-obj-callback
+def exclude_fullUrl(obj, path):
+    return True if "fullUrl" in path else False
+
 def exclude_operation_outcomes_from_entry(entries):
-    new_entries = []
     for entry in entries:
-        if entry['resource']['resourceType'] != 'OperationOutcome':
-            new_entries.append(entry)
-    print(len(new_entries))
-    return new_entries
+        if entry['resource']['resourceType'] == 'OperationOutcome':
+            entries.remove(entry)
+    print(len(entries))
+    return entries
 
 def diffyng(entry1, entry2):
+    n_entry1 = exclude_operation_outcomes_from_entry(entry1)
+    n_entry2 = exclude_operation_outcomes_from_entry(entry2)
+
     print('using diffyng lib')
-    d = DeepDiff(entry1, entry2, ignore_order=True)
+    d = DeepDiff(n_entry1, n_entry2, ignore_order=True)
     print(d)
     return d
 
