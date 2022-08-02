@@ -20,6 +20,8 @@ def lambda_handler(event, context):
     entry1  = json1.get('entry', [])
     entry2  = json2.get('entry', [])
 
+    #print(f'initial file1 entries size: {len(entry1)}')
+    #print(f'initial file2 entries size: {len(entry2)}')
 
     # First we check the obvious difference and then use deepdiff
     if len(entry1) != len(entry2) or diffyng(entry1, entry2):
@@ -47,14 +49,15 @@ def exclude_operation_outcomes_from_entry(entries):
     for entry in entries:
         if entry['resource']['resourceType'] == 'OperationOutcome':
             entries.remove(entry)
-    print(len(entries))
     return entries
 
 def diffyng(entry1, entry2):
     n_entry1 = exclude_operation_outcomes_from_entry(entry1)
     n_entry2 = exclude_operation_outcomes_from_entry(entry2)
+    #print(f'relevant file1 entries size: {len(entry1)}')
+    #print(f'relevant file2 entries size: {len(entry2)}')
 
-    print('using diffyng lib')
+    print('Diffyng...')
     d = DeepDiff(n_entry1, n_entry2, ignore_order=True)
     print(d)
     return d
