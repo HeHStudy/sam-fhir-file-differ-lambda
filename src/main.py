@@ -10,7 +10,7 @@ LAMBDA_ARN = os.environ['COPY_FILE_LAMBDA_ARN']
 
 def lambda_handler(event, context):
 
-    print(event)
+    #print(event)
     file1         = event['file1']
     file2         = event['file2']
     version       = event['version']
@@ -20,10 +20,11 @@ def lambda_handler(event, context):
     entry1  = json1.get('entry', [])
     entry2  = json2.get('entry', [])
 
-    d = DeepDiff(entry1, entry2, ignore_order=True)
-    print(d)
+    #print(f'initial file1 entries size: {len(entry1)}')
+    #print(f'initial file2 entries size: {len(entry2)}')
+
     # First we check the obvious difference and then use deepdiff
-    if len(entry1) != len(entry2) or d:
+    if len(entry1) != len(entry2) or diffyng(entry1, entry2):
         print("NEW FILE FOUND, COPYING DATA TO LAYER2")
         lambda_client = boto3.client('lambda')
         payload       = {
@@ -39,6 +40,27 @@ def lambda_handler(event, context):
     else:
         print("> Same file")
 
+# This can exclude elements from the path
+# see: https://zepworks.com/deepdiff/current/ignore_types_or_values.html#exclude-obj-callback
+def exclude_fullUrl(obj, path):
+    return True if "fullUrl" in path else False
+
+def exclude_operation_outcomes_from_entry(entries):
+    for entry in entries:
+        if entry['resource']['resourceType'] == 'OperationOutcome':
+            entries.remove(entry)
+    return entries
+
+def diffyng(entry1, entry2):
+    n_entry1 = exclude_operation_outcomes_from_entry(entry1)
+    n_entry2 = exclude_operation_outcomes_from_entry(entry2)
+    #print(f'relevant file1 entries size: {len(entry1)}')
+    #print(f'relevant file2 entries size: {len(entry2)}')
+
+    print('Diffyng...')
+    d = DeepDiff(n_entry1, n_entry2, ignore_order=True)
+    print(d)
+    return d
 
 def s3_read(file):
     fileobj = s3_client.get_object(
